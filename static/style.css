@@ -1,0 +1,250 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f0f9f4, #e8f4fd);
+    min-height: 100vh;
+    color: #1e293b;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: #166534;
+    margin-bottom: 6px;
+}
+
+header p {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+.section {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.section h2 {
+    font-size: 1.2rem;
+    color: #166534;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dcfce7;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.field {
+    margin-bottom: 15px;
+}
+
+.field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.field input, .field select, .field textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: #22c55e;
+}
+
+button {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-top: 10px;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+button:hover { transform: translateY(-2px); opacity: 0.9; }
+
+#submitBtn {
+    background: linear-gradient(135deg, #166534, #22c55e);
+    color: white;
+}
+
+#loadSample {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.hidden { display: none !important; }
+
+#loading {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #dcfce7;
+    border-top-color: #22c55e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#agentStatus {
+    font-size: 1.1rem;
+    color: #166534;
+    font-weight: 600;
+}
+
+/* Report Page */
+.score-card {
+    text-align: center;
+    background: white;
+    border-radius: 16px;
+    padding: 35px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.score-circle {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 8px solid #22c55e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.score-circle span {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.score-circle small {
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.score-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.summary-text {
+    color: #475569;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.list {
+    padding-left: 20px;
+}
+
+.list li {
+    color: #475569;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.risk-card {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
+.risk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.risk-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.risk-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.risk-explanation {
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.lifestyle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.lifestyle-card {
+    background: #f0fdf4;
+    border: 2px solid #dcfce7;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 0.9rem;
+    color: #166534;
+    line-height: 1.5;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.actions button {
+    background: linear-gradient(135deg, #166534, #22c55e);
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .lifestyle-grid { grid-template-columns: 1fr; }
+}

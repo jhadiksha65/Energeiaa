@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Testing - Energeiaa</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .patient-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .patient-table th { background: #166534; color: white; padding: 10px; text-align: left; }
+        .patient-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+        .patient-table tr:hover { background: #f0fdf4; cursor: pointer; }
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: white; }
+        .badge-yes { background: #ef4444; }
+        .badge-no { background: #22c55e; }
+        .badge-high { background: #ef4444; }
+        .badge-normal { background: #22c55e; }
+        .badge-low { background: #f59e0b; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        .stat-number { font-size: 2rem; font-weight: 800; color: #166534; }
+        .stat-label { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+        .report-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; overflow-y: auto; }
+        .report-modal { background: white; max-width: 700px; margin: 40px auto; border-radius: 16px; padding: 30px; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #64748b; background: none; border: none; }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section h3 { color: #166534; margin-bottom: 10px; font-size: 1rem; border-bottom: 2px solid #dcfce7; padding-bottom: 6px; }
+        .modal-section ul { padding-left: 18px; }
+        .modal-section li { color: #475569; margin-bottom: 6px; font-size: 0.9rem; }
+        .risk-row { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8fafc; border-radius: 8px; margin-bottom: 6px; }
+        .nav-link { color: #166534; text-decoration: none; font-weight: 600; }
+        .generate-btn { background: linear-gradient(135deg, #166534, #22c55e); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .loading-row { text-align: center; padding: 20px; color: #166534; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Energeiaa</h1>
+            <p>Dataset Testing — Kaggle Patient Data</p>
+        </header>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/" class="nav-link">← Back to Report Generator</a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row" id="statsRow">
+            <div class="stat-card">
+                <div class="stat-number" id="totalPatients">--</div>
+                <div class="stat-label">Total Patients in Dataset</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="showingCount">10</div>
+                <div class="stat-label">Showing First 10</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="testedCount">0</div>
+                <div class="stat-label">Reports Generated</div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="section">
+            <h2>📊 Patient Dataset</h2>
+            <p style="color:#64748b; font-size:0.9rem; margin-bottom:15px;">Click <strong>Generate Report</strong> on any patient to run all 5 AI agents and see their wellness report.</p>
+            <div style="overflow-x: auto;">
+                <table class="patient-table" id="patientTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Disease</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Fever</th>
+                            <th>Fatigue</th>
+                            <th>Blood Pressure</th>
+                            <th>Cholesterol</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientTableBody">
+                        <tr><td colspan="9" class="loading-row">⏳ Loading patients...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="report-overlay" id="reportOverlay">
+        <div class="report-modal">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <div id="modalLoading" style="text-align:center; padding:40px;">
+                <div class="spinner"></div>
+                <div id="modalAgentStatus" style="color:#166534; font-weight:600; margin-top:10px;">🤖 Starting agents...</div>
+            </div>
+            <div id="modalContent" style="display:none;">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div class="score-circle" id="modalScoreCircle" style="margin: 0 auto 10px;">
+                        <span id="modalScore">--</span>
+                        <small>Wellness Score</small>
+                    </div>
+                    <div id="modalScoreLabel" style="font-weight:700; font-size:1.1rem;"></div>
+                </div>
+                <div class="modal-section">
+                    <h3>👤 Profile Summary</h3>
+                    <p id="modalSummary" style="color:#475569; line-height:1.6; font-size:0.9rem;"></p>
+                </div>
+                <div class="modal-section">
+                    <h3>🔍 Key Observations</h3>
+                    <ul id="modalObservations"></ul>
+                </div>
+                <div class="modal-section">
+                    <h3>⚠️ Risk Indicators</h3>
+                    <div id="modalRisks"></div>
+                </div>
+                <div class="modal-section">
+                    <h3>✅ Recommendations</h3>
+                    <ul id="modalRecommendations"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testedCount = 0;
+        const agentMessages = [
+            "🤖 Profile Agent analyzing...",
+            "🔬 Interpreter Agent converting findings...",
+            "⚠️ Risk Agent identifying indicators...",
+            "💡 Wellness Coach generating advice...",
+            "📋 Compiler Agent assembling report..."
+        ];
+
+        function getBadgeClass(value, type) {
+            if (type === 'yesno') return value === 'Yes' ? 'badge-yes' : 'badge-no';
+            if (type === 'bp') return value === 'High' ? 'badge-high' : value === 'Low' ? 'badge-low' : 'badge-normal';
+            if (type === 'chol') return value === 'High' ? 'badge-high' : value === 'Low' ? 'badge-low' : 'badge-normal';
+            return '';
+        }
+
+        async function loadPatients() {
+            const res = await fetch('/dataset-patients');
+            const data = await res.json();
+            if (!data.success) { alert("Error loading dataset: " + data.error); return; }
+
+            document.getElementById('totalPatients').textContent = data.total;
+            const tbody = document.getElementById('patientTableBody');
+            tbody.innerHTML = '';
+
+            data.patients.forEach((p, i) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${i + 1}</strong></td>
+                    <td><strong>${p.Disease || 'N/A'}</strong></td>
+                    <td>${p.Age || 'N/A'}</td>
+                    <td>${p.Gender || 'N/A'}</td>
+                    <td><span class="badge ${getBadgeClass(p.Fever, 'yesno')}">${p.Fever || 'N/A'}</span></td>
+                    <td><span class="badge ${getBadgeClass(p.Fatigue, 'yesno')}">${p.Fatigue || 'N/A'}</span></td>
+                    <td><span class="badge ${getBadgeClass(p['Blood Pressure'], 'bp')}">${p['Blood Pressure'] || 'N/A'}</span></td>
+                    <td><span class="badge ${getBadgeClass(p['Cholesterol Level'], 'chol')}">${p['Cholesterol Level'] || 'N/A'}</span></td>
+                    <td><button class="generate-btn" onclick="generateReport(${i}, ${JSON.stringify(p).replace(/"/g, '&quot;')})">🚀 Generate</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function generateReport(index, patient) {
+            document.getElementById('reportOverlay').style.display = 'block';
+            document.getElementById('modalLoading').style.display = 'block';
+            document.getElementById('modalContent').style.display = 'none';
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < agentMessages.length) {
+                    document.getElementById('modalAgentStatus').textContent = agentMessages[i];
+                    i++;
+                }
+            }, 2000);
+
+            const res = await fetch('/run-dataset-patient', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ patient, index: index + 1 })
+            });
+
+            const data = await res.json();
+            clearInterval(interval);
+
+            if (!data.success) { alert("Error: " + data.error); closeModal(); return; }
+
+            testedCount++;
+            document.getElementById('testedCount').textContent = testedCount;
+
+            const report = data.report;
+            const score = report.wellness_score;
+            document.getElementById('modalScore').textContent = score;
+
+            const circle = document.getElementById('modalScoreCircle');
+            const label = document.getElementById('modalScoreLabel');
+            if (score >= 75) { circle.style.borderColor = '#22c55e'; label.textContent = '🟢 Great Health'; label.style.color = '#22c55e'; }
+            else if (score >= 50) { circle.style.borderColor = '#f59e0b'; label.textContent = '🟡 Fair Health'; label.style.color = '#f59e0b'; }
+            else { circle.style.borderColor = '#ef4444'; label.textContent = '🔴 Needs Attention'; label.style.color = '#ef4444'; }
+
+            document.getElementById('modalSummary').textContent = report.profile_summary;
+
+            const obs = document.getElementById('modalObservations');
+            obs.innerHTML = '';
+            report.key_observations.forEach(o => { const li = document.createElement('li'); li.textContent = o; obs.appendChild(li); });
+
+            const risks = document.getElementById('modalRisks');
+            risks.innerHTML = '';
+            const colors = { Low: '#22c55e', Moderate: '#f59e0b', High: '#ef4444' };
+            report.risk_indicators.forEach(r => {
+                risks.innerHTML += `<div class="risk-row"><span style="font-weight:600">${r.name}</span><span class="badge" style="background:${colors[r.level]}">${r.level}</span></div>`;
+            });
+
+            const recs = document.getElementById('modalRecommendations');
+            recs.innerHTML = '';
+            report.recommendations.forEach(r => { const li = document.createElement('li'); li.textContent = r; recs.appendChild(li); });
+
+            document.getElementById('modalLoading').style.display = 'none';
+            document.getElementById('modalContent').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('reportOverlay').style.display = 'none';
+        }
+
+        loadPatients();
+    </script>
+</body>
+</html>
+```
+
+Save both files, then open:
+```
+http://127.0.0.1:8000/dataset
