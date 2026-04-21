@@ -7,11 +7,69 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+
+    <!-- Navbar -->
+    <nav style="background:#166534; padding:12px 30px; display:flex; 
+    gap:20px; align-items:center;">
+        <span style="color:white; font-weight:700; font-size:1.1rem;">
+            🌿 Energeiaa
+        </span>
+        <a href="/" style="color:#dcfce7; text-decoration:none; 
+        font-size:0.9rem;">Home</a>
+        <a href="/dataset" style="color:#dcfce7; text-decoration:none; 
+        font-size:0.9rem;">Dataset Testing</a>
+    </nav>
+
     <div class="container">
         <header>
             <h1>🌿 Energeiaa</h1>
             <p>Agentic AI Wellness Report System</p>
         </header>
+
+        <!-- Agent Pipeline Visual -->
+        <div style="background:#f0fdf4; border:2px solid #dcfce7;
+        border-radius:12px; padding:16px; margin-bottom:24px;">
+            <p style="font-size:0.8rem; color:#166534; font-weight:700;
+            margin-bottom:10px; text-transform:uppercase;
+            letter-spacing:0.5px;">AI Agent Pipeline</p>
+            <div style="display:flex; align-items:center;
+            justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <div style="text-align:center;">
+                    <div style="background:#166534; color:white;
+                    border-radius:8px; padding:8px 12px; font-size:0.8rem;">
+                        👤 Profile Agent
+                    </div>
+                </div>
+                <span style="color:#166534; font-weight:700;">→</span>
+                <div style="text-align:center;">
+                    <div style="background:#166534; color:white;
+                    border-radius:8px; padding:8px 12px; font-size:0.8rem;">
+                        🔬 Interpreter
+                    </div>
+                </div>
+                <span style="color:#166534; font-weight:700;">→</span>
+                <div style="text-align:center;">
+                    <div style="background:#166534; color:white;
+                    border-radius:8px; padding:8px 12px; font-size:0.8rem;">
+                        ⚠️ Risk Analyst
+                    </div>
+                </div>
+                <span style="color:#166634; font-weight:700;">→</span>
+                <div style="text-align:center;">
+                    <div style="background:#166534; color:white;
+                    border-radius:8px; padding:8px 12px; font-size:0.8rem;">
+                        💡 Coach
+                    </div>
+                </div>
+                <span style="color:#166534; font-weight:700;">→</span>
+                <div style="text-align:center;">
+                    <div style="background:#166534; color:white;
+                    border-radius:8px; padding:8px 12px; font-size:0.8rem;">
+                        📋 Compiler
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <form id="wellnessForm">
             <div class="section">
@@ -19,11 +77,13 @@
                 <div class="grid">
                     <div class="field">
                         <label>Full Name</label>
-                        <input type="text" id="name" placeholder="e.g. Priya Sharma" required>
+                        <input type="text" id="name" 
+                        placeholder="e.g. Priya Sharma" required>
                     </div>
                     <div class="field">
                         <label>Age</label>
-                        <input type="number" id="age" placeholder="e.g. 35" required>
+                        <input type="number" id="age" 
+                        placeholder="e.g. 35" required>
                     </div>
                     <div class="field">
                         <label>Gender</label>
@@ -35,33 +95,76 @@
                     </div>
                     <div class="field">
                         <label>Occupation</label>
-                        <input type="text" id="occupation" placeholder="e.g. Software Engineer">
+                        <input type="text" id="occupation" 
+                        placeholder="e.g. Software Engineer">
                     </div>
                 </div>
                 <div class="field">
                     <label>Medical History</label>
-                    <input type="text" id="medical_history" placeholder="e.g. Mild hypertension, diabetes">
+                    <input type="text" id="medical_history" 
+                    placeholder="e.g. Mild hypertension, diabetes">
                 </div>
             </div>
 
             <div class="section">
                 <h2>🩺 Medical Findings</h2>
+
+                <!-- Image Upload Section -->
+                <div class="field">
+                    <label>📷 Upload Prescription Image (Optional)</label>
+                    <div style="border: 2px dashed #22c55e; border-radius: 10px;
+                    padding: 20px; text-align: center; background: #f0fdf4;
+                    cursor: pointer;" 
+                    onclick="document.getElementById('imageInput').click()">
+                        <div id="uploadText">
+                            <span style="font-size: 2rem;">📄</span><br>
+                            <span style="color: #166534; font-weight: 600;">
+                                Click to upload prescription image
+                            </span><br>
+                            <span style="color: #64748b; font-size: 0.85rem;">
+                                JPG, PNG supported
+                            </span>
+                        </div>
+                        <div id="uploadedFileName" style="color:#166534;
+                        font-weight:600; display:none;"></div>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*"
+                    style="display:none" onchange="handleImageUpload(this)">
+                    <button type="button" id="extractBtn"
+                    style="display:none; margin-top:10px; background:#166534;
+                    color:white; border:none; padding:10px 20px;
+                    border-radius:8px; cursor:pointer; font-weight:600;"
+                    onclick="extractPrescription()">
+                        🔍 Extract Text from Image
+                    </button>
+                    <div id="extractStatus" style="margin-top:8px;
+                    font-size:0.9rem; color:#166534; font-weight:600;"></div>
+                </div>
+
                 <div class="field">
                     <label>Doctor's Findings *</label>
-                    <textarea id="findings" rows="4" placeholder="e.g. Patient shows elevated blood pressure 145/90, mild anxiety symptoms, Vitamin D deficiency..." required></textarea>
+                    <textarea id="findings" rows="4" 
+                    placeholder="e.g. Patient shows elevated blood pressure 145/90, mild anxiety symptoms, Vitamin D deficiency... (or upload image above to auto-fill)" 
+                    required></textarea>
                 </div>
                 <div class="field">
                     <label>Test Parameters</label>
-                    <textarea id="parameters" rows="3" placeholder="e.g. BP: 145/90, Vitamin D: 18 ng/mL, BMI: 27.4"></textarea>
+                    <textarea id="parameters" rows="3" 
+                    placeholder="e.g. BP: 145/90, Vitamin D: 18 ng/mL, BMI: 27.4">
+                    </textarea>
                 </div>
                 <div class="field">
                     <label>Observations</label>
-                    <textarea id="observations" rows="3" placeholder="e.g. Mild stress, irregular sleep, low physical activity"></textarea>
+                    <textarea id="observations" rows="3" 
+                    placeholder="e.g. Mild stress, irregular sleep, low physical activity">
+                    </textarea>
                 </div>
             </div>
 
             <button type="button" id="loadSample">📋 Load Sample Data</button>
-            <button type="submit" id="submitBtn">🚀 Generate Wellness Report</button>
+            <button type="submit" id="submitBtn">
+                🚀 Generate Wellness Report
+            </button>
         </form>
 
         <div id="loading" class="hidden">
@@ -101,7 +204,8 @@
             "📋 Compiler Agent assembling report..."
         ];
 
-        document.getElementById("wellnessForm").addEventListener("submit", async (e) => {
+        document.getElementById("wellnessForm").addEventListener("submit", 
+        async (e) => {
             e.preventDefault();
 
             document.getElementById("wellnessForm").classList.add("hidden");
@@ -110,7 +214,8 @@
             let i = 0;
             const interval = setInterval(() => {
                 if (i < agentMessages.length) {
-                    document.getElementById("agentStatus").textContent = agentMessages[i];
+                    document.getElementById("agentStatus").textContent = 
+                    agentMessages[i];
                     i++;
                 }
             }, 2000);
@@ -139,7 +244,8 @@
                 clearInterval(interval);
 
                 if (data.success) {
-                    localStorage.setItem("wellnessReport", JSON.stringify(data.report));
+                    localStorage.setItem("wellnessReport", 
+                    JSON.stringify(data.report));
                     window.location.href = "/report";
                 } else {
                     alert("Error: " + data.error);
@@ -153,6 +259,57 @@
                 document.getElementById("wellnessForm").classList.remove("hidden");
             }
         });
+
+        // Image upload functions
+        let selectedFile = null;
+
+        function handleImageUpload(input) {
+            if (input.files && input.files[0]) {
+                selectedFile = input.files[0];
+                document.getElementById('uploadText').style.display = 'none';
+                document.getElementById('uploadedFileName').style.display = 
+                'block';
+                document.getElementById('uploadedFileName').textContent =
+                    '✅ ' + selectedFile.name;
+                document.getElementById('extractBtn').style.display = 
+                'inline-block';
+            }
+        }
+
+        async function extractPrescription() {
+            if (!selectedFile) return;
+
+            document.getElementById('extractStatus').textContent =
+                '⏳ Reading prescription image...';
+            document.getElementById('extractBtn').disabled = true;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('/extract-prescription', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('findings').value = 
+                    data.extracted_text;
+                    document.getElementById('extractStatus').textContent =
+                        '✅ Text extracted! Review and click Generate Report.';
+                } else {
+                    document.getElementById('extractStatus').textContent =
+                        '❌ Error: ' + data.error;
+                }
+            } catch (err) {
+                document.getElementById('extractStatus').textContent =
+                    '❌ Something went wrong.';
+            } finally {
+                document.getElementById('extractBtn').disabled = false;
+            }
+        }
     </script>
 </body>
 </html>

@@ -22,7 +22,13 @@ Return a JSON array of risk indicators. Each item must have exactly these keys:
 
 Include 3-5 risk indicators total.
 Return ONLY valid JSON array. No extra text, no markdown, no code blocks.
+
+IMPORTANT: Only identify risks based on information explicitly provided. 
+If a parameter is missing or not mentioned, do NOT assume or invent values. 
+Skip that risk entirely. Never guess.
 """
+
+
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
